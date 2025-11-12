@@ -23,7 +23,6 @@ runBenchmark() {
     echo "Running genAI-perf for $description with input length $inputLength and output length $outputLength"
     #Runs
     for concurrency in 1 5 10 25 50 100 150 200; do
-    #for concurrency in 1 100; do
  
         local INPUT_SEQUENCE_LENGTH=$inputLength
         local INPUT_SEQUENCE_STD=0
@@ -38,7 +37,6 @@ runBenchmark() {
         genai-perf profile \
             -m $MODEL \
             --artifact-dir /artifacts/baseline \
-            --tokenizer $TOKENIZER \
             --concurrency $CONCURRENCY \
             --measurement-interval ${MEASUREMENT_INTERVAL} \
             --stability-percentage 10 \

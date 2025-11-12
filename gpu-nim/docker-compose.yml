@@ -35,7 +35,6 @@ services:
     restart: unless-stopped
     environment:
       NGC_API_KEY: ${NGC_API_KEY}
-      TOKENIZER: nvidia/llama-3_3-nemotron-super-49b-v1_5
     volumes:
       - ./benchmark-scripts:/benchmark-scripts
       - ./benchmark-artifacts:/artifacts
