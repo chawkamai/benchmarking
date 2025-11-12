@@ -2,6 +2,10 @@ services:
 
   inference-server:
     image: nvcr.io/nim/meta/llama-3.3-70b-instruct:1.13
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
     container_name: inference-server
     restart: unless-stopped
     environment:
@@ -31,10 +35,11 @@ services:
     restart: unless-stopped
     environment:
       NGC_API_KEY: ${NGC_API_KEY}
+      TOKENIZER: nvidia/tritonserver
     volumes:
       - ./benchmark-scripts:/benchmark-scripts
       - ./benchmark-artifacts:/artifacts
-      - "${HOME}/.secrets:/secrets"
+      - "/secrets:/secrets:ro"
     deploy:
       resources:
         reservations:

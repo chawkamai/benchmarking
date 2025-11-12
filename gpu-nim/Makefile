@@ -1,8 +1,7 @@
 .PHONY: setup
 setup:
-	@echo "NGC_API_KEY=$$(cat ~/.secrets/ngc-api-key.txt)" > .env
-	#@echo "HF_TOKEN=$$(cat ~/.secrets/hf-token.txt)" >> .env
-	@cat ~/.secrets/ngc-api-key.txt | docker login nvcr.io -u '$$oauthtoken' --password-stdin
+	@echo "NGC_API_KEY=$$(cat /secrets/ngc-api-key.txt)" > .env
+	@cat /secrets/ngc-api-key.txt | docker login nvcr.io -u '$$oauthtoken' --password-stdin
 	@-useradd -m -s `which bash` nvidia
 	@mkdir -p nim-cache
 	@chown nvidia:nvidia nim-cache
@@ -26,7 +25,9 @@ getting-started: setup up status
 
 .PHONY: list-model-profiles
 list-model-profiles:
-	@docker compose up list-model-profiles
+    @echo "NGC_API_KEY=$$(cat /secrets/ngc-api-key.txt)" > .env
+    @cat /secrets/ngc-api-key.txt | docker login nvcr.io -u '$$oauthtoken' --password-stdin
+    @docker compose up list-model-profiles
 
 .PHONY: list-models
 list-models:
