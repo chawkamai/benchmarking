@@ -14,7 +14,9 @@ status:
 
 .PHONY: up
 up:
-	docker compose up -d inference-server benchmark-server
+	check-model-image
+	@echo "Starting services with model image: $(MODEL_IMAGE)"
+	docker compose up -d inference-server benchmark-server --env MODEL_IMAGE=$(MODEL_IMAGE)
 
 .PHONY: stop
 stop:
@@ -36,6 +38,11 @@ list-models:
 .PHONY: truncate-logs
 truncate-logs:
 	truncate -s 0 `docker inspect --format='{{.LogPath}}' inference-server`
+
+check-model-image:
+	ifndef MODEL_IMAGE
+		$(error MODEL_IMAGE is not set. Use 'make getting-started MODEL_IMAGE=<image_name>')
+	endif
 
 #
 # Benchmarks

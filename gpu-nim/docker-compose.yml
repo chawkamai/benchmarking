@@ -1,7 +1,7 @@
 services:
 
   inference-server:
-    image: nvcr.io/nim/meta/llama-3.3-70b-instruct:1.13
+    image: ${MODEL_IMAGE:-nvcr.io/nim/meta/llama-3.3-70b-instruct:1.13}
     ulimits:
       nofile:
         soft: 65535
