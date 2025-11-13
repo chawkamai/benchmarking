@@ -36,17 +36,16 @@ def fetch_profile_id(verbose=False):
     """Fetch the NIM_MODEL_PROFILE (Profile ID) from the inference-server container."""
     try:
         result = subprocess.run(
-            ["docker", "compose", "exec", "inference-server", "bash", "-c", "echo $NIM_MODEL_PROFILE"],
+            ["docker", "compose", "logs", "inference-server"],
             capture_output=True,
-            text=True,
-            check=True
+            text=True
         )
-        profile_id = result.stdout.strip()
-        if profile_id:
-            return profile_id
+        matches = re.findall(r"Selected profile:\s*([a-f0-9]{64})", result.stdout)
+        if matches:
+            return matches[-1]
         else:
             if verbose:
-                print("Warning: NIM_MODEL_PROFILE is empty in the container.")
+                print("Warning: NIM_MODEL_PROFILE is empty in the container")
             return None
     except subprocess.CalledProcessError as e:
         if verbose:
