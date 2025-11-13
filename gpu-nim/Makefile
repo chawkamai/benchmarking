@@ -15,8 +15,9 @@ status:
 .PHONY: up
 up: check-model-image
 	@echo "Starting services with model image: $(MODEL_IMAGE)"
-	docker compose up -d inference-server benchmark-server --env MODEL_IMAGE=$(MODEL_IMAGE)
-
+	@echo "MODEL_IMAGE=${MODEL_IMAGE}" > .env
+	docker compose up -d inference-server benchmark-server
+	
 .PHONY: stop
 stop:
 	docker compose stop inference-server benchmark-server
