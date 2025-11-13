@@ -7,7 +7,8 @@ REPO_DIR="benchmarking/gpu-nim"
 VENV_DIR="python-venv"
 NVIDIA_DRIVER_URL="https://us.download.nvidia.com/XFree86/Linux-x86_64/580.95.05/NVIDIA-Linux-x86_64-580.95.05.run"
 SECRETS_DIR="/secrets"
-CHECK_INTERVAL=15  # seconds between status checks
+MAX_RETRY_MINUTES=30
+SLEEP_INTERVAL=30  # seconds between status checks
 ### ==============================
 
 echo "Starting setup process..."
@@ -70,8 +71,9 @@ echo "Running 'make getting-started'..."
 if make getting-started MODEL_IMAGE=$MODEL_IMAGE; then
   echo "getting-started completed successfully."
 else
-  echo "⚠getting-started failed. Checking inference-server health..."
-  while true; do
+  echo "getting-started failed. Entering retry loop (max ${MAX_RETRY_MINUTES} minutes) to check inference-server health..."
+  SECONDS=0
+  while [ $SECONDS -lt $((MAX_RETRY_MINUTES * 60)) ]; do
     STATUS=$(make status | grep -i 'inference-server' || true)
     echo "$STATUS"
     if echo "$STATUS" | grep -q '(healthy)'; then
@@ -79,8 +81,8 @@ else
       make up
       break
     fi
-    echo "Waiting for inference-server to become healthy..."
-    sleep "$CHECK_INTERVAL"
+    echo "Waiting for inference-server to become healthy... ($((SECONDS / 60))/${MAX_RETRY_MINUTES} min elapsed)"
+    sleep "$SLEEP_INTERVAL"
   done
 fi
 
