@@ -16,19 +16,25 @@ echo "Starting setup process..."
 # --- Validate required environment variables ---
 if [ -z "$HF_TOKEN" ]; then
   echo "Error: HF_TOKEN environment variable not set."
-  echo "Usage: HF_TOKEN=your_hf_token NGC_API_KEY=your_ngc_key MODEL_IMAGE=nim_image ./setup.sh"
+  echo "Usage: HF_TOKEN=your_hf_token NGC_API_KEY=your_ngc_key MODEL_IMAGE=nim_image TOKENIZER=tokenizer ./setup.sh"
   exit 1
 fi
 
 if [ -z "$NGC_API_KEY" ]; then
   echo "Error: NGC_API_KEY environment variable not set."
-  echo "Usage: HF_TOKEN=your_hf_token NGC_API_KEY=your_ngc_key MODEL_IMAGE=nim_image ./setup.sh"
+  echo "Usage: HF_TOKEN=your_hf_token NGC_API_KEY=your_ngc_key MODEL_IMAGE=nim_image TOKENIZER=tokenizer ./setup.sh"
   exit 1
 fi
 
 if [ -z "$MODEL_IMAGE" ]; then
   echo "Error: MODEL_IMAGE environment variable not set."
-  echo "Usage: HF_TOKEN=your_hf_token NGC_API_KEY=your_ngc_key MODEL_IMAGE=nim_image ./setup.sh"
+  echo "Usage: HF_TOKEN=your_hf_token NGC_API_KEY=your_ngc_key MODEL_IMAGE=nim_image TOKENIZER=tokenizer ./setup.sh"
+  exit 1
+fi
+
+if [ -z "$TOKENIZER" ]; then
+  echo "Error: TOKENIZER environment variable not set."
+  echo "Usage: HF_TOKEN=your_hf_token NGC_API_KEY=your_ngc_key MODEL_IMAGE=nim_image TOKENIZER=tokenizer ./setup.sh"
   exit 1
 fi
 
@@ -68,7 +74,7 @@ done
 
 # --- Run getting-started with retry logic ---
 echo "Running 'make getting-started'..."
-if make getting-started MODEL_IMAGE=$MODEL_IMAGE; then
+if make getting-started MODEL_IMAGE=$MODEL_IMAGE TOKENIZER=$TOKENIZER; then
   echo "getting-started completed successfully."
 else
   echo "getting-started failed. Entering retry loop (max ${MAX_RETRY_MINUTES} minutes) to check inference-server health..."

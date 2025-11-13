@@ -13,17 +13,18 @@ status:
 	@docker compose ps --format "{{.Service}}+{{.Status}}" | awk -F'+' '{split($$1, svc, ":"); print svc[1] " " $$2}'
 
 .PHONY: up
-up: check-model-image
-	@echo "Starting services with model image: $(MODEL_IMAGE)"
+up: check-reqs
+	@echo "Starting services with model image: $(MODEL_IMAGE), tokenizer: $(TOKENIZER)"
 	@echo "MODEL_IMAGE=${MODEL_IMAGE}" > .env
+	@echo "TOKENIZER=${TOKENIZER}" > .env
 	docker compose up -d inference-server benchmark-server
-	
+
 .PHONY: stop
 stop:
 	docker compose stop inference-server benchmark-server
 
 .PHONY: getting-started
-getting-started: check-model-image setup up status
+getting-started: check-reqs setup up status
 
 .PHONY: list-model-profiles
 list-model-profiles:
@@ -39,10 +40,13 @@ list-models:
 truncate-logs:
 	truncate -s 0 `docker inspect --format='{{.LogPath}}' inference-server`
 
-.PHONY: check-model-image
-check-model-image:
+.PHONY: check-reqs
+check-reqs:
 ifndef MODEL_IMAGE
 	$(error MODEL_IMAGE is not set. Use 'MODEL_IMAGE=<image_name>' after make command)
+endif
+ifndef TOKENIZER
+	$(error TOKENIZER is not set. Use 'TOKENIZER=<tokenizer>' after make command)
 endif
 
 #

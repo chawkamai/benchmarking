@@ -38,6 +38,7 @@ runBenchmark() {
         genai-perf profile \
             -m $MODEL \
             --artifact-dir /artifacts/smoketest \
+            --tokenizer: $TOKENIZER \
             --concurrency $CONCURRENCY \
             --measurement-interval ${MEASUREMENT_INTERVAL} \
             --stability-percentage 10 \
