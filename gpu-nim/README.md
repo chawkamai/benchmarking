@@ -2,6 +2,17 @@
 
 ## Getting Started
 
+### Automated Setup
+
+setup.sh will handle all of the manual steps below. 
+You need to provide a HF_TOKEN (from Huggingface), an NGC_API_KEY (from NVIDIA), MODEL_IMAGE (from NVIDIA), and TOKENIZER (from Huggingface that correlates to the MODEL_IMAGE)
+
+```
+HF_TOKEN=<token> NGC_API_KEY=<key> MODEL_IMAGE=nvcr.io/nim/nvidia/llama-3.3-nemotron-super-49b-v1.5:latest TOKENIZER=nvidia/llama-3_3-nemotron-super-49b-v1_5 ./setup.sh
+```
+
+Once the setup script completes you can source your new venv (python-venv/bin/activate) and run tests as described in Running a Benchmark section with make commands.
+
 ### Bootstrap
 
 The very first thing to do on a new system in order to run this benchmarking suite is to bootstrap it.  Do this by running the [bootstrap.sh](bootstrap.sh) script.  This will install some dependencies for installing the NVIDIA driver and creating a Python virtual environment (for report generation).
