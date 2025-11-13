@@ -1,6 +1,8 @@
 .PHONY: setup
 setup:
 	@echo "NGC_API_KEY=$$(cat /secrets/ngc-api-key.txt)" > .env
+	@echo "MODEL_IMAGE=${MODEL_IMAGE}" >> .env
+	@echo "TOKENIZER=${TOKENIZER}" >> .env
 	@cat /secrets/ngc-api-key.txt | docker login nvcr.io -u '$$oauthtoken' --password-stdin
 	@-useradd -m -s `which bash` nvidia
 	@mkdir -p nim-cache
@@ -15,8 +17,6 @@ status:
 .PHONY: up
 up: check-reqs
 	@echo "Starting services with model image: $(MODEL_IMAGE), tokenizer: $(TOKENIZER)"
-	@echo "MODEL_IMAGE=${MODEL_IMAGE}" > .env
-	@echo "TOKENIZER=${TOKENIZER}" > .env
 	docker compose up -d inference-server benchmark-server
 
 .PHONY: stop
@@ -28,7 +28,6 @@ getting-started: check-reqs setup up status
 
 .PHONY: list-model-profiles
 list-model-profiles:
-	@echo "NGC_API_KEY=$$(cat /secrets/ngc-api-key.txt)" > .env
 	@cat /secrets/ngc-api-key.txt | docker login nvcr.io -u '$$oauthtoken' --password-stdin
 	@docker compose up list-model-profiles
 
