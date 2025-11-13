@@ -13,8 +13,7 @@ status:
 	@docker compose ps --format "{{.Service}}+{{.Status}}" | awk -F'+' '{split($$1, svc, ":"); print svc[1] " " $$2}'
 
 .PHONY: up
-up:
-	check-model-image
+up: check-model-image
 	@echo "Starting services with model image: $(MODEL_IMAGE)"
 	docker compose up -d inference-server benchmark-server --env MODEL_IMAGE=$(MODEL_IMAGE)
 
@@ -23,7 +22,7 @@ stop:
 	docker compose stop inference-server benchmark-server
 
 .PHONY: getting-started
-getting-started: setup up status
+getting-started: check-model-image setup up status
 
 .PHONY: list-model-profiles
 list-model-profiles:
@@ -39,10 +38,11 @@ list-models:
 truncate-logs:
 	truncate -s 0 `docker inspect --format='{{.LogPath}}' inference-server`
 
+.PHONY: check-model-image
 check-model-image:
-	ifndef MODEL_IMAGE
-		$(error MODEL_IMAGE is not set. Use 'make getting-started MODEL_IMAGE=<image_name>')
-	endif
+ifndef MODEL_IMAGE
+	$(error MODEL_IMAGE is not set. Use 'MODEL_IMAGE=<image_name>' after make command)
+endif
 
 #
 # Benchmarks
